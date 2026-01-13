@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:notes_app/components/drawer.dart';
 import 'package:notes_app/models/note.dart';
 import 'package:notes_app/models/note_database.dart';
 import 'package:provider/provider.dart';
@@ -92,31 +94,56 @@ class _NotesPageState extends State<NotesPage> {
     List<Note> currentNotes = noteDatabase.currentNotes;
 
     return Scaffold(
-      appBar: AppBar(title: Text('Notes')),
-      body: ListView.builder(
-        itemCount: currentNotes.length,
-        itemBuilder: (context, index) {
-          final note = currentNotes[index];
-          return ListTile(
-            title: Text(note.text, style: const TextStyle(color: Colors.black)),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min, // important
-              children: [
-                IconButton(
-                  onPressed: () => updateNote(note),
-                  icon: const Icon(Icons.edit),
-                ),
-                IconButton(
-                  style: ButtonStyle(
-                    iconColor: WidgetStatePropertyAll(Colors.red),
-                  ),
-                  onPressed: () => deleteNote(note),
-                  icon: const Icon(Icons.delete),
-                ),
-              ],
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      appBar: AppBar(),
+      drawer: MyDrawer(),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 24),
+
+            child: Text(
+              "Notes",
+              style: GoogleFonts.dmSerifText(
+                fontSize: 54,
+                color: Theme.of(context).colorScheme.inversePrimary,
+              ),
             ),
-          );
-        },
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: currentNotes.length,
+              itemBuilder: (context, index) {
+                final note = currentNotes[index];
+                return ListTile(
+                  title: Text(
+                    note.text,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.inversePrimary,
+                    ),
+                  ),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min, // important
+                    children: [
+                      IconButton(
+                        onPressed: () => updateNote(note),
+                        icon: const Icon(Icons.edit),
+                      ),
+                      IconButton(
+                        style: ButtonStyle(
+                          iconColor: WidgetStatePropertyAll(Colors.red),
+                        ),
+                        onPressed: () => deleteNote(note),
+                        icon: const Icon(Icons.delete),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: createNote,
