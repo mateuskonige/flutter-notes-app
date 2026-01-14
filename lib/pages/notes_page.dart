@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:notes_app/components/drawer.dart';
+import 'package:notes_app/components/note_tile.dart';
 import 'package:notes_app/models/note.dart';
 import 'package:notes_app/models/note_database.dart';
 import 'package:provider/provider.dart';
@@ -61,6 +62,7 @@ class _NotesPageState extends State<NotesPage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        backgroundColor: Theme.of(context).colorScheme.primary,
         title: Text("Update note ${note.id}"),
         content: TextField(controller: textController),
         actions: [
@@ -112,42 +114,31 @@ class _NotesPageState extends State<NotesPage> {
             ),
           ),
           Expanded(
-            child: ListView.builder(
+            child: ListView.separated(
               itemCount: currentNotes.length,
               itemBuilder: (context, index) {
                 final note = currentNotes[index];
-                return ListTile(
-                  title: Text(
-                    note.text,
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.inversePrimary,
-                    ),
-                  ),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min, // important
-                    children: [
-                      IconButton(
-                        onPressed: () => updateNote(note),
-                        icon: const Icon(Icons.edit),
-                      ),
-                      IconButton(
-                        style: ButtonStyle(
-                          iconColor: WidgetStatePropertyAll(Colors.red),
-                        ),
-                        onPressed: () => deleteNote(note),
-                        icon: const Icon(Icons.delete),
-                      ),
-                    ],
-                  ),
+                return NoteTile(
+                  text: note.text,
+                  onEditPressed: () => updateNote(note),
+                  onDeletePressed: () => deleteNote(note),
                 );
+              },
+              separatorBuilder: (context, index) {
+                return SizedBox(height: 12);
               },
             ),
           ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Theme.of(context).colorScheme.primary,
+
         onPressed: createNote,
-        child: Icon(Icons.add),
+        child: Icon(
+          Icons.add,
+          color: Theme.of(context).colorScheme.inversePrimary,
+        ),
       ),
     );
   }
